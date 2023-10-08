@@ -2,6 +2,7 @@ package org.acme.controller;
 
 import java.util.List;
 
+import org.acme.dto.request.MahasiswaRequest;
 import org.acme.model.Mahasiswa;
 import org.acme.service.MahasiswaService;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class MahasiswaController {
     }
 
     @POST
-    public Response save(Mahasiswa request) {
+    public Response save(MahasiswaRequest request) {
 
         Mahasiswa newMahasiswa = mahasiswaService.save(request);
 
@@ -68,20 +69,20 @@ public class MahasiswaController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") String id, Mahasiswa requestBody) {
+    public Response update(@PathParam("id") String id, MahasiswaRequest requestBody) {
 
         Boolean isUpdated = mahasiswaService.updateById(id, requestBody);
 
-        Integer status;
-        String messgae;
+        int status;
+        String message;
         if(isUpdated){
-            messgae = "Success";
+            message = "Success";
             status = 200;
         } else {
-            messgae = "Failed";
+            message = "Failed";
             status = 400;
         }
 
-        return Response.status(status).entity(messgae).build();
+        return Response.status(status).entity(message).build();
     }
 }

@@ -3,6 +3,7 @@ package org.acme.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.acme.dto.request.MahasiswaRequest;
 import org.acme.model.Mahasiswa;
 import org.acme.repository.MahasiswaRepository;
 
@@ -25,7 +26,7 @@ public class MahasiswaService {
     }
     
     @Transactional  
-    public Mahasiswa save(Mahasiswa request) {
+    public Mahasiswa save(MahasiswaRequest request) {
 
         Mahasiswa mahasiswa = new Mahasiswa();
         mahasiswa.setId(UUID.randomUUID().toString());
@@ -45,27 +46,29 @@ public class MahasiswaService {
     }
 
     @Transactional
-    public Boolean updateById(String id, Mahasiswa requestBody) {
-        // check if mahasiswa is exist
+    public Boolean updateById(String id, MahasiswaRequest requestBody) {
+
+        Boolean isMahasiswaUpdated = true;
         try {
             Mahasiswa mahasiswa = mahasiswaRepository.findById(id);
 
         if (mahasiswa == null) {
+            isMahasiswaUpdated = false;
             throw new EntityNotFoundException("Mahasiswa not found with ID: " + id);
         }
 
-        mahasiswa.setEmail(requestBody.getEmail());
-        mahasiswa.setIsMale(requestBody.getIsMale());
-        mahasiswa.setJob(requestBody.getJob());
-        mahasiswa.setName(requestBody.getName());
+        if(requestBody.getName() != null) mahasiswa.setName(requestBody.getName());
+        if(requestBody.getEmail() != null) mahasiswa.setEmail(requestBody.getEmail());
+        if(requestBody.getJob() != null) mahasiswa.setJob(requestBody.getJob());
+        if(requestBody.getIsMale() != null) mahasiswa.setIsMale(requestBody.getIsMale());
 
         mahasiswaRepository.persist(mahasiswa);
 
-        return true;
+        return isMahasiswaUpdated;
 
         } catch (Exception e) {
             // TODO: handle exception
-            return false;
+            return isMahasiswaUpdated;
         }
     }
     
